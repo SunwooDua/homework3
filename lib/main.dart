@@ -17,17 +17,32 @@ class CardMatchApp extends StatelessWidget {
   }
 }
 
-class grid_box extends StatelessWidget {
-  const grid_box({super.key});
+class grid_box extends StatefulWidget {
+  @override
+  State<grid_box> createState() => _grid_boxState();
+}
+
+class _grid_boxState extends State<grid_box> {
+  bool selected = false;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(8),
-      child: Container(
-        height: 25,
-        width: 25,
-        decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selected = !selected;
+        });
+      },
+      child: Padding(
+        padding: EdgeInsets.all(8),
+        child: AnimatedContainer(
+          height: 25,
+          width: 25,
+          decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+          duration: Duration(seconds: 2),
+          curve: Curves.bounceInOut,
+          child: Image(image: AssetImage('assets/card_back.png')),
+        ),
       ),
     );
   }
