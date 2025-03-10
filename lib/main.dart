@@ -17,6 +17,22 @@ class CardMatchApp extends StatelessWidget {
   }
 }
 
+class gird_box extends StatelessWidget {
+  const gird_box({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(8),
+      child: Container(
+        height: 25,
+        width: 25,
+        decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+      ),
+    );
+  }
+}
+
 class CardMatchScreen extends StatefulWidget {
   const CardMatchScreen({super.key});
 
@@ -27,6 +43,20 @@ class CardMatchScreen extends StatefulWidget {
 class _CardMatchScreenState extends State<CardMatchScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("CardMatchingApp"),
+        backgroundColor: Colors.blue,
+      ),
+      body: GridView.builder(
+        itemCount: 16, //number of card 4x4
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+        ),
+        itemBuilder: (context, index) {
+          return gird_box();
+        },
+      ),
+    );
   }
 }
