@@ -18,46 +18,23 @@ class CardMatchApp extends StatelessWidget {
   }
 }
 
-class grid_box extends StatefulWidget {
+class grid_box extends StatelessWidget {
   final frontCard card;
-  const grid_box({Key? key, required this.card}) : super(key: key);
+  final int index;
+  final Function onTap;
 
-  @override
-  State<grid_box> createState() => _grid_boxState();
-}
+  const grid_box({
+    Key? key,
+    required this.card,
+    required this.index,
+    required this.onTap,
+  }) : super(key: key);
 
-class _grid_boxState extends State<grid_box> {
-  bool selected = false;
-
-  final List<String> cardFronts = [
-    'assets/card1.png',
-    'assets/card2.png',
-    'assets/card3.png',
-    'assets/card4.png',
-    'assets/card5.png',
-    'assets/card6.png',
-    'assets/card7.png',
-    'assets/card8.png',
-
-    'assets/card1.png',
-    'assets/card2.png',
-    'assets/card3.png',
-    'assets/card4.png',
-    'assets/card5.png',
-    'assets/card6.png',
-    'assets/card7.png',
-    'assets/card8.png',
-  ]; // card list for front, put two since need matching
-
-  String randomFront = ''; // save random image
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          selected = !selected;
-          widget.card.isFlipped = selected;
-        });
+        onTap(); // move it to CardMatchScreen
       },
       child: Padding(
         padding: EdgeInsets.all(8),
@@ -68,8 +45,8 @@ class _grid_boxState extends State<grid_box> {
           duration: Duration(seconds: 2),
           curve: Curves.bounceInOut,
           child:
-              selected
-                  ? Image(image: AssetImage(widget.card.frontImage))
+              card.isFlipped
+                  ? Image(image: AssetImage(card.frontImage))
                   : Image(image: AssetImage('assets/card_back.png')),
         ),
       ),
@@ -78,7 +55,6 @@ class _grid_boxState extends State<grid_box> {
 }
 
 class frontCard {
-  //track if cards are flippped
   final String frontImage;
   bool isFlipped;
 
@@ -92,8 +68,9 @@ class CardMatchScreen extends StatefulWidget {
 
 class _CardMatchScreenState extends State<CardMatchScreen> {
   List<frontCard> cards = [];
+  List<int> flippedIndex = [];
 
-  // initialzation of cards (random and check if flipped) use initState
+  // Initialize cards and randomize
   void initState() {
     super.initState();
 
@@ -106,7 +83,6 @@ class _CardMatchScreenState extends State<CardMatchScreen> {
       frontCard(frontImage: 'assets/card6.png'),
       frontCard(frontImage: 'assets/card7.png'),
       frontCard(frontImage: 'assets/card8.png'),
-
       frontCard(frontImage: 'assets/card1.png'),
       frontCard(frontImage: 'assets/card2.png'),
       frontCard(frontImage: 'assets/card3.png'),
@@ -117,8 +93,30 @@ class _CardMatchScreenState extends State<CardMatchScreen> {
       frontCard(frontImage: 'assets/card8.png'),
     ];
 
-    //randomize
+    // Randomize the cards
     cards.shuffle();
+  }
+
+  void matchCheck() {
+    if (flippedIndex.length == 2) {
+      int firstIndex = flippedIndex[0];
+      int secondIndex = flippedIndex[1];
+      if (cards[firstIndex].frontImage == cards[secondIndex].frontImage) {
+        // Cards match, leave them flipped
+        setState(() {
+          flippedIndex.clear();
+        });
+      } else {
+        // Cards don't match, flip them back
+        Future.delayed(Duration(seconds: 1), () {
+          setState(() {
+            cards[firstIndex].isFlipped = false;
+            cards[secondIndex].isFlipped = false;
+            flippedIndex.clear();
+          });
+        });
+      }
+    }
   }
 
   @override
@@ -129,12 +127,24 @@ class _CardMatchScreenState extends State<CardMatchScreen> {
         backgroundColor: Colors.blue,
       ),
       body: GridView.builder(
-        itemCount: 16, //number of card 4x4
+        itemCount: 16, // Number of cards (4x4 grid)
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
+          crossAxisCount: 4, // 4 cards per row
         ),
         itemBuilder: (context, index) {
-          return grid_box(card: cards[index]);
+          return grid_box(
+            card: cards[index],
+            index: index,
+            onTap: () {
+              if (!cards[index].isFlipped && flippedIndex.length < 2) {
+                setState(() {
+                  cards[index].isFlipped = true; // Flip selected card
+                  flippedIndex.add(index); // Save flipped index
+                });
+                matchCheck();
+              }
+            },
+          );
         },
       ),
     );
