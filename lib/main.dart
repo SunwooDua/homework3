@@ -41,7 +41,10 @@ class _grid_boxState extends State<grid_box> {
           decoration: BoxDecoration(border: Border.all(color: Colors.black)),
           duration: Duration(seconds: 2),
           curve: Curves.bounceInOut,
-          child: Image(image: AssetImage('assets/card_back.png')),
+          child:
+              selected
+                  ? Image(image: AssetImage('assets/card1.png'))
+                  : Image(image: AssetImage('assets/card_back.png')),
         ),
       ),
     );
