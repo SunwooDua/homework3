@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 void main() {
   runApp(const CardMatchApp());
@@ -24,13 +25,27 @@ class grid_box extends StatefulWidget {
 
 class _grid_boxState extends State<grid_box> {
   bool selected = false;
+  final List<String> cardFronts = [
+    'assets/card1.png',
+    'assets/card2.png',
+    'assets/card3.png',
+    'assets/card4.png',
+    'assets/card1.png',
+    'assets/card2.png',
+    'assets/card3.png',
+    'assets/card4.png',
+  ]; // card list for front, put two since need matching
 
+  String randomFront = ''; // save random image
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         setState(() {
           selected = !selected;
+          if (selected) {
+            randomFront = cardFronts[Random().nextInt(cardFronts.length)];
+          }
         });
       },
       child: Padding(
@@ -43,7 +58,7 @@ class _grid_boxState extends State<grid_box> {
           curve: Curves.bounceInOut,
           child:
               selected
-                  ? Image(image: AssetImage('assets/card1.png'))
+                  ? Image(image: AssetImage(randomFront))
                   : Image(image: AssetImage('assets/card_back.png')),
         ),
       ),
