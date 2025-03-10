@@ -17,8 +17,8 @@ class CardMatchApp extends StatelessWidget {
   }
 }
 
-class gird_box extends StatelessWidget {
-  const gird_box({super.key});
+class grid_box extends StatelessWidget {
+  const grid_box({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +54,7 @@ class _CardMatchScreenState extends State<CardMatchScreen> {
           crossAxisCount: 4,
         ),
         itemBuilder: (context, index) {
-          return gird_box();
+          return grid_box();
         },
       ),
     );
